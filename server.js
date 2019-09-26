@@ -4,6 +4,8 @@ var app = express();
 require('./router/main')(app);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname+'/public'));
+
 app.engine('html', require('ejs').renderFile);
 
 app.get('/read-data-file', function (req, res) {
