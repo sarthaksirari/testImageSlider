@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="master.css">
+    <script type='text/javascript' src='../app.js'></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" href="/">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="cloud-cover">Cloud Cover</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="ndvi-score">NDVI Score<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="smooth-ndvi-score">Smooth NDVI Score</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="predicted-ndvi-score">Predicted NDVI Score</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li> -->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="width:45vw">
+        <canvas id="overlay" width="1000" height="600" style="position:absolute;pointer-events:none;"></canvas>
+        <canvas id="chartJSContainer" width="1000" height="600"></canvas>
+        <script>
+            // Read CSV to JSON
+            var url = 'http://localhost:3000/read-data-file'; //A local page
+            function load(url, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        callback(xhr.response);
+                    }
+                }
+                xhr.open('GET', url, true);
+                xhr.send('');
+            }
+
+            function callback(response) {
+                var json = JSON.parse(response);
+                var labels = json.map(function (e) {
+                    return (e.day + "-" + e.month + "-" + e.year);
+                });
+                var rawNDVIScoreData = json.map(function (e) {
+                    return e.rawNDVIScore;
+                });
+
+                // Chart Plot
+                var options = {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Raw NDVI Score',
+                            data: rawNDVIScoreData,
+                            borderWidth: 1
+                        }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    reverse: false
+                                }
+                            }]
+                        }
+                    }
+                }
+
+                var canvas = document.getElementById('chartJSContainer');
+                var ctx = canvas.getContext('2d');
+                var chart = new Chart(ctx, options);
+                var overlay = document.getElementById('overlay');
+                var startIndex = 0;
+                overlay.width = canvas.width;
+                overlay.height = canvas.height;
+                var selectionContext = overlay.getContext('2d');
+                var selectionRect = {
+                    w: 0,
+                    startX: 0,
+                    startY: 0
+                };
+                var drag = false;
+
+                canvas.addEventListener('pointerdown', evt => {
+                    const points = chart.getElementsAtEventForMode(evt, 'index', {
+                        intersect: false
+                    });
+                    startIndex = points[0]._index;
+                    const rect = canvas.getBoundingClientRect();
+                    selectionRect.startX = evt.clientX - rect.left;
+                    selectionRect.startY = chart.chartArea.top;
+                    drag = true;
+                    // save points[0]._index for filtering
+                });
+
+                canvas.addEventListener('pointermove', evt => {
+                    const rect = canvas.getBoundingClientRect();
+                    if (drag) {
+                        const rect = canvas.getBoundingClientRect();
+                        selectionRect.w = (evt.clientX - rect.left) - selectionRect.startX;
+                        selectionContext.globalAlpha = 0.5;
+                        selectionContext.clearRect(0, 0, canvas.width, canvas.height);
+                        selectionContext.fillRect(selectionRect.startX,
+                            selectionRect.startY,
+                            selectionRect.w,
+                            chart.chartArea.bottom - chart.chartArea.top);
+                    } else {
+                        selectionContext.clearRect(0, 0, canvas.width, canvas.height);
+                        var x = evt.clientX - rect.left;
+                        if (x > chart.chartArea.left) {
+                            selectionContext.fillRect(x,
+                                chart.chartArea.top,
+                                1,
+                                chart.chartArea.bottom - chart.chartArea.top);
+                        }
+                    }
+                });
+
+                canvas.addEventListener('pointerup', evt => {
+                    const points = chart.getElementsAtEventForMode(evt, 'index', {
+                        intersect: false
+                    });
+                    drag = false;
+                    console.log('implement filter between ' + options.data.labels[startIndex] + ' and ' +
+                        options.data.labels[points[0]._index]);
+                });
+            }
+
+            load(url, callback);
+
+        </script>
+    </div>
+</body>
+
+</html>
