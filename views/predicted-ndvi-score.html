@@ -105,6 +105,26 @@
                                     reverse: false
                                 }
                             }]
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: function (tooltipItem, data) {
+                                    return 'Date: ' + data['labels'][tooltipItem[0]['index']];
+                                },
+                                label: function (tooltipItem, data) {
+                                    return 'Predicted NDVI Score: ' +
+                                        parseFloat(data['datasets'][0]['data'][tooltipItem['index']]).toFixed(2);
+                                },
+                                afterLabel: function (tooltipItem, data) {
+
+                                }
+                            }
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
                         }
                     }
                 }
@@ -169,6 +189,18 @@
                                 options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
                                 '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
                                 '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
+
+                            // Update chart tooltip
+                            chart.options.tooltips.callbacks.title = function (tooltipItem, data) {
+                                console.log(chart.options)
+                                return 'Selected Duration: ' + data.labels[start] + ' to ' + data.labels[end];
+                            };
+                            chart.options.tooltips.callbacks.label = function (tooltipItem, data) {
+                                return 'Total Value: ' + sum.toFixed(2);
+                            };
+                            chart.options.tooltips.callbacks.afterLabel = function (tooltipItem, data) {
+                                return 'Average Value: ' + (sum / count).toFixed(2);
+                            };
                         }
                     } else {
                         selectionContext.clearRect(0, 0, canvas.width, canvas.height);
@@ -189,25 +221,15 @@
                     drag = false;
                     document.getElementById('selectedValue').innerHTML = '';
 
-                    // Calculate selected values
-                    // if (startIndex != points[0]._index) {
-                    //     var start, end, count = 0, sum = 0;
-                    //     if (startIndex < points[0]._index) {
-                    //         start = startIndex;
-                    //         end = points[0]._index;
-                    //     } else {
-                    //         start = points[0]._index;
-                    //         end = startIndex;
-                    //     }
-                    //     for (var i = start; i <= end; i++) {
-                    //         count++;
-                    //         sum = sum + parseFloat(options.data.datasets[0].data[i]);
-                    //     }
-                    //     document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
-                    //         options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
-                    //         '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
-                    //         '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
-                    // }
+                    // Update chart tooltip
+                    chart.options.tooltips.callbacks.title = function (tooltipItem, data) {
+                        return 'Date: ' + data['labels'][tooltipItem[0]['index']];
+                    };
+                    chart.options.tooltips.callbacks.label = function (tooltipItem, data) {
+                        return 'Predicted NDVI Score: ' +
+                            parseFloat(data['datasets'][0]['data'][tooltipItem['index']]).toFixed(2);
+                    };
+                    chart.options.tooltips.callbacks.afterLabel = function () {};
                 });
             }
 
