@@ -146,6 +146,29 @@
                             selectionRect.startY,
                             selectionRect.w,
                             chart.chartArea.bottom - chart.chartArea.top);
+
+                        // Calculate selected values
+                        const points = chart.getElementsAtEventForMode(evt, 'index', {
+                            intersect: false
+                        });
+                        if (startIndex != points[0]._index) {
+                            var start, end, count = 0, sum = 0;
+                            if (startIndex < points[0]._index) {
+                                start = startIndex;
+                                end = points[0]._index;
+                            } else {
+                                start = points[0]._index;
+                                end = startIndex;
+                            }
+                            for (var i = start; i <= end; i++) {
+                                count++;
+                                sum = sum + parseFloat(options.data.datasets[0].data[i]);
+                            }
+                            document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
+                                options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
+                                '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
+                                '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
+                        }
                     } else {
                         selectionContext.clearRect(0, 0, canvas.width, canvas.height);
                         var x = evt.clientX - rect.left;
@@ -163,26 +186,27 @@
                         intersect: false
                     });
                     drag = false;
+                    document.getElementById('selectedValue').innerHTML = '';
 
                     // Calculate selected values
-                    if (startIndex != points[0]._index) {
-                        var start, end, count = 0, sum = 0;
-                        if (startIndex < points[0]._index) {
-                            start = startIndex;
-                            end = points[0]._index;
-                        } else {
-                            start = points[0]._index;
-                            end = startIndex;
-                        }
-                        for (var i = start; i <= end; i++) {
-                            count++;
-                            sum = sum + parseFloat(options.data.datasets[0].data[i]);
-                        }
-                        document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
-                            options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
-                            '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
-                            '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
-                    }
+                    // if (startIndex != points[0]._index) {
+                    //     var start, end, count = 0, sum = 0;
+                    //     if (startIndex < points[0]._index) {
+                    //         start = startIndex;
+                    //         end = points[0]._index;
+                    //     } else {
+                    //         start = points[0]._index;
+                    //         end = startIndex;
+                    //     }
+                    //     for (var i = start; i <= end; i++) {
+                    //         count++;
+                    //         sum = sum + parseFloat(options.data.datasets[0].data[i]);
+                    //     }
+                    //     document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
+                    //         options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
+                    //         '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
+                    //         '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
+                    // }
                 });
             }
 
