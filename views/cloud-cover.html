@@ -184,10 +184,10 @@
                                 count++;
                                 sum = sum + parseFloat(options.data.datasets[0].data[i]);
                             }
-                            document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
-                                options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
-                                '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
-                                '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
+                            // document.getElementById('selectedValue').innerHTML = 'Selected Duration: ' + '<b>' +
+                            //     options.data.labels[start] + ' to ' + options.data.labels[end] + '</b>' +
+                            //     '<br>' + 'Total Value: ' + '<b>' + sum.toFixed(2) + '</b>' +
+                            //     '<br>' + 'Average Value: ' + '<b>' + (sum / count).toFixed(2) + '</b>';
 
                             // Update chart tooltip
                             chart.options.tooltips.callbacks.title = function (tooltipItem, data) {
@@ -218,7 +218,7 @@
                         intersect: false
                     });
                     drag = false;
-                    document.getElementById('selectedValue').innerHTML = '';
+                    // document.getElementById('selectedValue').innerHTML = '';
 
                     // Update chart tooltip
                     chart.options.tooltips.callbacks.title = function (tooltipItem, data) {
@@ -235,7 +235,7 @@
             load(url, callback);
 
         </script>
-        <label id="selectedValue"></label>
+        <!-- <label id="selectedValue"></label> -->
     </div>
 </body>
 
