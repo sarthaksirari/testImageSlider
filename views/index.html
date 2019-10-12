@@ -123,6 +123,8 @@
                 display: block;
             }
         }
+
+
     </style>
 </head>
 
@@ -161,8 +163,8 @@
     <div class="container" style="padding: 1vw; margin: 0vw">
         <div class="container">
             <div class="row justify-content-md-center">
-                <div class="col">
-                    <div class="card bg-light" style="width: 30vw">
+                <div class="col-3" style="padding-right:7.5px; margin-top:111px;">
+                    <div class="card bg-light">
                         <div class="card-body">
 
                             <div id="gaugeArea"></div>
@@ -183,7 +185,7 @@
                                 }
 
                                 // Drawing and updating the chart
-                                GaugeChart.gaugeChart(element, 400, gaugeOptions).updateNeedle(gaugeValue)
+                                GaugeChart.gaugeChart(element, 240, gaugeOptions).updateNeedle(gaugeValue)
                             </script>
                             <p>Crop Health Meter</p>
                             <!-- <footer class="blockquote-footer">
@@ -194,7 +196,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col" style="width: 20vw;">
+                <div class="col-3" style="padding-left:7.5px;margin-top: 111px;">
+                    <div class="card bg-light">
+                        <div class="card-body">
+
+                            <div id="gaugeArea2"></div>
+                            <script>
+                                let gaugeValue2 = 75;
+                                // Element inside which you want to see the chart
+                                let element2 = document.querySelector('#gaugeArea2')
+
+                                // Properties of the gauge
+                                let gaugeOptions2 = {
+                                    hasNeedle: true,
+                                    needleColor: 'gray',
+                                    needleUpdateSpeed: 1000,
+                                    arcColors: ['red', 'yellow', 'green'],
+                                    arcDelimiters: [20, 40],
+                                    rangeLabel: ['0', '100'],
+                                    centralLabel: gaugeValue.toString(),
+                                }
+
+                                // Drawing and updating the chart
+                                GaugeChart.gaugeChart(element2, 240, gaugeOptions2).updateNeedle(gaugeValue2)
+                            </script>
+                            <p>Crop Health Meter</p>
+                            <!-- <footer class="blockquote-footer">
+                                <small class="text-muted">
+                                    Alarm the authorities when the NDVI value drops sharply
+                                </small>
+                            </footer> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6" style="width: 20vw;border:1px solid rgba(0,0,0,.125)">
                     <canvas id="overlay" width="1000" height="600"
                         style="position:absolute;pointer-events:none;"></canvas>
                     <canvas id="chartJSContainer" width="1000" height="600"></canvas>
@@ -375,38 +410,85 @@
             </div>
             <div class="row ">
                 <div class="col">
-                    <div class="container text-center">
+                    <div class="container text-center" style="margin-top:15px;border:1px solid rgba(0,0,0,.125);padding-right:15px;">
                         <div class="carousel slide row" data-ride="carousel" data-type="multi" data-interval="2000"
                             id="satelliteImageCarousel">
 
                             <div class="carousel-inner">
                                 <div class="item active">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
                                 <div class="item">
-                                    <div class="col-md-3 col-sm-4 col-xs-12"><a href="#"><img
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a class="left carousel-control" href="#satelliteImageCarousel" data-slide="prev"><i
+                                    class="glyphicon glyphicon-chevron-left"></i></a>
+                            <a class="right carousel-control" href="#satelliteImageCarousel" data-slide="next"><i
+                                    class="glyphicon glyphicon-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col">
+                    <div class="container text-center" style="margin-top:15px;border:1px solid rgba(0,0,0,.125);padding-right:15px;">
+                        <div class="carousel slide row" data-ride="carousel" data-type="multi" data-interval="2000"
+                            id="satelliteImageCarousel">
+
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
+                                                src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="col-md-3 col-sm-4 col-xs-12" style="padding:0 5px 0 5px;"><a href="#"><img
                                                 src="img/7680-10240-TCI-2018-07-25.png" class="img-responsive"></a>
                                     </div>
                                 </div>
